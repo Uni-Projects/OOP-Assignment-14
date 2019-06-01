@@ -1,11 +1,13 @@
 package taxi;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author pieterkoopman
  */
-public class Taxi {
+public class Taxi implements Runnable{
 
     private final int taxiId;
     private final int maxNrOfPassengers;
@@ -49,5 +51,17 @@ public class Taxi {
 
     public int getTotalNrOfPassengers() {
         return totalNrOfPassengers;
+    }
+
+    @Override
+    public void run() {
+        while (station.waitingPassengers() > 0 || !station.isClosed()){
+            takePassengers();
+            try {
+                Thread.sleep(transportationTime*10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Taxi.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }  
     }
 }
