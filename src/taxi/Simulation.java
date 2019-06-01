@@ -68,23 +68,6 @@ public class Simulation {
         }
     }
 
-    /**
-     * simulation step: if there are passengers load them in a taxi, otherwise
-     * let a train bring new passengers, or indicate that simulation stops
-     */
-    public void step() {
-        if (station.waitingPassengers() > 0) {
-            taxis[nextTaxi].takePassengers();
-            nextTaxi = (nextTaxi + 1) % NR_OF_TAXIS;
-        } else if (train.getNrOfTrips() < TRAIN_TRIPS) {
-            train.loadPassengers(Util.getRandomNumber(MIN_TRAVELLERS, MAX_TRAVELLERS));
-            train.unloadPassengers();
-        } else {
-            train.closeStation();
-            hasEnded = true;
-        }
-    }
-
     public boolean ended() {
         return hasEnded;
     }

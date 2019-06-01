@@ -16,25 +16,25 @@ public class Station {
     private Lock lock = new ReentrantLock();
     private Condition noPeople = lock.newCondition();
     private Condition waitingPeople = lock.newCondition();
-    
+
     public void enterStation(int nrOfPassengers) {
         lock.lock();
-        try{
-            while (waitingPassengers() > 0){
+        try {
+            while (waitingPassengers() > 0) {
                 noPeople.await();
             }
             nrOfPassengersAtStation += nrOfPassengers;
             totalNrOfPassengers += nrOfPassengers;
             System.out.println(nrOfPassengers + " passengers arrived at station");
             waitingPeople.signalAll();
-            
+
         } catch (InterruptedException ex) {
             ex.printStackTrace();
-        }finally{
+        } finally {
             lock.unlock();
         }
-        
     }
+
     /**
      * Ask for nrOfPassengers Passengers to leave the station
      *
@@ -44,33 +44,34 @@ public class Station {
     public int leaveStation(int requestedNrOfPassengers) {
         lock.lock();
         int actuallyLeaving = 0;
-        try{ 
-            while (waitingPassengers() == 0){
-                waitingPeople.await(); 
+        try {
+            while (waitingPassengers() == 0) {
+                waitingPeople.await();
             }
             actuallyLeaving = Math.min(requestedNrOfPassengers, nrOfPassengersAtStation);
             nrOfPassengersAtStation -= actuallyLeaving;
-            if (waitingPassengers() == 0)
+            if (waitingPassengers() == 0) {
                 noPeople.signalAll();
-            
+            }
+
         } catch (InterruptedException ex) {
             ex.printStackTrace();
-        }finally{
-            lock.unlock(); 
-        }    
+        } finally {
+            lock.unlock();
+        }
         return actuallyLeaving;
     }
 
     public int waitingPassengers() {
         return nrOfPassengersAtStation;
     }
-    
+
     public void close() {
         isClosed = true;
     }
-    
+
     public boolean isClosed() {
-        return isClosed;     
+        return isClosed;
     }
 
     public int getTotalNrOfPassengers() {
