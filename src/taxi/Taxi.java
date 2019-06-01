@@ -1,12 +1,13 @@
 package taxi;
 
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static taxi.Simulation.STARTTIME;
 
 /**
  *
  * @author pieterkoopman
+ * @author Paolo Scattolin
+ * @author Johan Urban
+ *
  */
 public class Taxi implements Runnable {
 
@@ -36,7 +37,7 @@ public class Taxi implements Runnable {
         if (nrOfPassengers > 0) {
             totalNrOfPassengers += nrOfPassengers;
             nrOfRides++;
-            System.out.println("Taxi " + taxiId + " takes " + nrOfPassengers + " passengers");
+            System.out.println(getColor(taxiId)+"Taxi " + taxiId + " takes " + nrOfPassengers + " passengers" + "at " + (System.currentTimeMillis() - STARTTIME) + " ms.");
         } else {
             System.out.println("There are no passengers for taxi " + taxiId);
         }
@@ -56,14 +57,31 @@ public class Taxi implements Runnable {
         return totalNrOfPassengers;
     }
 
+    private String getColor(int id){
+        switch (id){
+            case 1:
+                return "\033[31;1m";
+            case 2:
+                return "\033[32;1m";
+            case 3:
+                return "\033[36;1m";
+            case 4:
+                return "\033[35;1m";            
+        }
+        return "\033[0m";
+    }
+    
     @Override
     public void run() {
         while (station.waitingPassengers() > 0 || !station.isClosed()) {
             takePassengers();
             try {
-                Thread.sleep(transportationTime * 10);
+                int time = 10 * (Util.getRandomNumber(transportationTime, transportationTime + maxNrOfPassengers));
+                Thread.sleep(time); //add some delays based on the number of passengers.
+                System.out.println(getColor(taxiId) + "Taxi " + taxiId + " drops passengers "
+                        + " after " + time + " ms.");   
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }

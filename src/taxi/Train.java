@@ -7,6 +7,9 @@ import static taxi.Simulation.MIN_TRAVELLERS;
  * Trains bring a number of passengers to a station in the Taxi simulation
  *
  * @author pieterkoopman
+ * @author Paolo Scattolin
+ * @author Johan Urban
+ *
  */
 public class Train implements Runnable {
 

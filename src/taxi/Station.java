@@ -3,8 +3,14 @@ package taxi;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import static taxi.Simulation.STARTTIME;
 
 /**
+ * @author pieterkoopman
+ * @author Paolo Scattolin
+ * @author Johan Urban
+ *
+ *
  * Class that holds the number of persons arriving by train at the station and
  * waiting for a taxi
  */
@@ -13,9 +19,10 @@ public class Station {
     private int nrOfPassengersAtStation = 0;
     private int totalNrOfPassengers = 0;
     private boolean isClosed = false;
-    private Lock lock = new ReentrantLock();
-    private Condition noPeople = lock.newCondition();
-    private Condition waitingPeople = lock.newCondition();
+    private final Lock lock = new ReentrantLock();
+    private final Condition noPeople = lock.newCondition();
+    private final Condition waitingPeople = lock.newCondition();
+    private final String color = "\033[33;1m";
 
     public void enterStation(int nrOfPassengers) {
         lock.lock();
@@ -25,11 +32,12 @@ public class Station {
             }
             nrOfPassengersAtStation += nrOfPassengers;
             totalNrOfPassengers += nrOfPassengers;
-            System.out.println(nrOfPassengers + " passengers arrived at station");
+            System.out.println(color + nrOfPassengers + " passengers arrived at station at: "
+                    + (System.currentTimeMillis() - STARTTIME) + " ms.");
             waitingPeople.signalAll();
 
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         } finally {
             lock.unlock();
         }
@@ -53,9 +61,8 @@ public class Station {
             if (waitingPassengers() == 0) {
                 noPeople.signalAll();
             }
-
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         } finally {
             lock.unlock();
         }

@@ -3,12 +3,11 @@ package taxi;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
  * @author pieterkoopman
+ * @author Paolo Scattolin
+ * @author Johan Urban
  */
 public class Simulation {
 
@@ -26,6 +25,11 @@ public class Simulation {
     public static final int NR_OF_SMALL_TAXIS = 2;
 
     /**
+     * Constants for time measures.
+     */
+    public static final long STARTTIME = System.currentTimeMillis();
+
+    /**
      * main elements of the simulation
      */
     private final Taxi[] taxis;
@@ -36,8 +40,8 @@ public class Simulation {
      * hasEnded: is the simulation finished? nextTaxi: number of the taxi to be
      * use in next step
      */
-    private boolean hasEnded = false;
-    private int nextTaxi = 0;
+    private final boolean hasEnded = false;
+    private final int nextTaxi = 0;
 
     /**
      * Constructor: create station and small and large taxis
@@ -53,18 +57,23 @@ public class Simulation {
         train = new Train(station);
     }
 
+    /**
+     * it creates and starts the threads for train and taxis and shows stats
+     * when all the threads are done.
+     */
     public void start() {
         ExecutorService executor = Executors.newCachedThreadPool();
         executor.execute(train);
         for (Taxi taxi : taxis) {
             executor.execute(taxi);
         }
+
         executor.shutdown();
         try {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
             showStatistics();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -106,5 +115,9 @@ public class Simulation {
             total += taxi.getTotalNrOfPassengers();
         }
         return total;
+    }
+
+    public Simulation getSim() {
+        return this;
     }
 }
