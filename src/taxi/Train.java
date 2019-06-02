@@ -20,6 +20,7 @@ public class Train implements Runnable {
     public Train(Station station) {
         this.station = station;
         this.nrOfPassengers = 0;
+        System.out.println("Train created");
     }
 
     /**

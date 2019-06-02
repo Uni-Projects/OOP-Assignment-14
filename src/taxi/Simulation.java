@@ -55,6 +55,7 @@ public class Simulation {
                     : new Taxi(i + 1, CAPACITY_LARGE, TIME_LARGE, station);
         }
         train = new Train(station);
+        System.out.println();
     }
 
     /**
@@ -82,10 +83,18 @@ public class Simulation {
     }
 
     public void showStatistics() {
-        System.out.println("All persons have been transported");
-        System.out.println("Total transport time in this simulation:" + calcTotalTime(taxis));
+        System.out.println();
+        System.out.println("**********STATISTICS**********");
+        if (station.getTotalNrOfPassengers() == calcTotalNrOfPassengers(taxis)) {
+            System.out.println("All persons have been transported");
+        } else {
+            System.out.println("Not all persons have been transported");
+        }
+
+        System.out.println("Total transport time in this simulation: " + calcTotalTime(taxis));
         System.out.println("Total number of train travelers: " + station.getTotalNrOfPassengers());
         System.out.println("Total number of persons transported in this simulation: " + calcTotalNrOfPassengers(taxis));
+        System.out.println("******************************");
     }
 
     /**

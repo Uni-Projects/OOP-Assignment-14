@@ -22,7 +22,7 @@ public class Station {
     private final Lock lock = new ReentrantLock();
     private final Condition noPeople = lock.newCondition();
     private final Condition waitingPeople = lock.newCondition();
-    private final String color = "\033[33;1m";
+    private final String color = "\033[33;1m"; //ANSI YELLOW
 
     public void enterStation(int nrOfPassengers) {
         lock.lock();
@@ -58,6 +58,7 @@ public class Station {
             }
             actuallyLeaving = Math.min(requestedNrOfPassengers, nrOfPassengersAtStation);
             nrOfPassengersAtStation -= actuallyLeaving;
+            System.out.println( color + (waitingPassengers() + actuallyLeaving) + " passengers waiting at the station.");
             if (waitingPassengers() == 0) {
                 noPeople.signalAll();
             }

@@ -37,7 +37,9 @@ public class Taxi implements Runnable {
         if (nrOfPassengers > 0) {
             totalNrOfPassengers += nrOfPassengers;
             nrOfRides++;
-            System.out.println(getColor(taxiId)+"Taxi " + taxiId + " takes " + nrOfPassengers + " passengers" + "at " + (System.currentTimeMillis() - STARTTIME) + " ms.");
+            System.out.println(getColor(taxiId) + "Taxi " + taxiId + " TAKES " +
+                    nrOfPassengers + " passengers " + "at " +
+                    (System.currentTimeMillis() - STARTTIME) + " ms.");
         } else {
             System.out.println("There are no passengers for taxi " + taxiId);
         }
@@ -57,29 +59,36 @@ public class Taxi implements Runnable {
         return totalNrOfPassengers;
     }
 
-    private String getColor(int id){
-        switch (id){
+    /**
+     *
+     * @param id taxi id
+     * @return ANSI escape colour code depending on the id
+     */
+    private String getColor(int id) {
+        switch (id) {
             case 1:
-                return "\033[31;1m";
+                return "\033[31;1m"; //ANSI RED
             case 2:
-                return "\033[32;1m";
+                return "\033[32;1m"; //ANSI GREEN
             case 3:
-                return "\033[36;1m";
+                return "\033[36;1m"; //ANSI MAGENTA
             case 4:
-                return "\033[35;1m";            
+                return "\033[35;1m"; //ANSI CYAN          
         }
         return "\033[0m";
     }
-    
+
     @Override
     public void run() {
         while (station.waitingPassengers() > 0 || !station.isClosed()) {
             takePassengers();
             try {
-                int time = 10 * (Util.getRandomNumber(transportationTime, transportationTime + maxNrOfPassengers));
-                Thread.sleep(time); //add some delays based on the number of passengers.
-                System.out.println(getColor(taxiId) + "Taxi " + taxiId + " drops passengers "
-                        + " after " + time + " ms.");   
+                int traffic = Util.getRandomNumber(0, 5);
+                int time = 12 * (Util.getRandomNumber(traffic,
+                        traffic + transportationTime + maxNrOfPassengers));
+                Thread.sleep(time); //add some delays based on the number of passengers and transportationTime.
+                System.out.println(getColor(taxiId) + "Taxi " + taxiId + " DROPS passengers "
+                        + "after " + time + "ms.");
             } catch (InterruptedException ex) {
                 System.out.println(ex.getMessage());
             }
